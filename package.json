@@ -24,6 +24,6 @@
     "jstransformer-babel": "^2.1.0",
     "nodemon": "^1.11.0",
     "pug": "^2.0.0-beta.12",
-    "socket.io": "^1.7.3",
+    "socket.io": "^1.7.3"
   }
 }
