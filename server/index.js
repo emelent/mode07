@@ -17,9 +17,10 @@ const db = require('./state');
 const app = express();
 const server = http.Server(app);
 const io = socketIo(server);
+const pubDir = path.join(__dirname, '../public');
 
 /*MIDDLEWARE*/
-app.use(express.static('../public'));
+app.use('/assets', express.static(path.join(pubDir, 'assets')));
 app.use(fileUpload());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -42,13 +43,15 @@ app.post('/upload', (req, res) => {
   exec(`mkdir -p ${binDir}`);
   exec(`mkdir -p ${tarDir}`);
 
+  console.log(binPath);
+  console.log(tarPath);
   binFile.mv(binPath, (error) => {
     if(error)
-      return res.status(500).end(error);
+      return res.status(500).end(error.message);
     let tarFile = req.files.tar;
     tarFile.mv(tarPath, (error) => {
       if(error)
-        return res.status(500).end(error);
+        return res.status(500).end(error.message);
 
       fs.chmodSync(binPath, 777);
 
@@ -73,7 +76,10 @@ app.get('/l99', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  db.retrieveState(state => res.render(
+    path.join(pubDir, 'index.pug'), 
+    {uploads: state.uploads}
+  ));
 });
 app.get('/state', (req, res) => {
   db.retrieveState(state => res.end(JSON.stringify(state)));
@@ -82,10 +88,6 @@ app.get('/state', (req, res) => {
 
 app.get('/uploads', (req, res) => {
   db.retrieveState(state => res.end(JSON.stringify(state.uploads)));
-});
-
-app.get('/codes', (req, res) => {
-  db.retrieveState(state => res.end(JSON.stringify(state.codes)));
 });
 
 /*SOCKET IO*/
