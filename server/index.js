@@ -39,20 +39,27 @@ app.post('/upload', (req, res) => {
   let tarName = `${Date.now()}.tar.gz`;
   let tarPath = `${tarDir}/${tarName}`;
 
-  //prepare directories
-  exec(`mkdir -p ${binDir}`);
-  exec(`mkdir -p ${tarDir}`);
 
   console.log(binPath);
   console.log(tarPath);
-  binFile.mv(binPath, (error) => {
+  exec(`mkdir -p ${binDir}`);
+  exec(`mkdir -p ${tarDir}`);
+  binFile.mv('bin', (error) => {
     if(error)
       return res.status(500).end(error.message);
     let tarFile = req.files.tar;
-    tarFile.mv(tarPath, (error) => {
+    tarFile.mv('tar', (error) => {
       if(error)
         return res.status(500).end(error.message);
 
+      fs.rename('bin', binPath, (error) => {
+        if(error)
+          return res.status(500).end(error.message);
+      });
+      fs.rename('tar', tarPath, (error) => {
+        if(error)
+          return res.status(500).end(error.message);
+      });
       fs.chmodSync(binPath, 777);
 
       db.retrieveState((state) =>{
