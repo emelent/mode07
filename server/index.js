@@ -32,6 +32,10 @@ app.post('/upload', (req, res) => {
     return res.status(400).end('No files were uploaded.');
 
   let {module, type, name} = req.body;
+  module = module.toLowerCase();
+  type = type.toLowerCase();
+  name = name.toLowerCase();
+
   let binFile = req.files.binary;
   let binDir = path.join(__dirname, `uploads/bin/${module}/${type}`);
   let tarDir = path.join(__dirname, `uploads/src/${module}/${type}`);
