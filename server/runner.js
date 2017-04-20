@@ -1,7 +1,7 @@
 const spawn = require('child_process').spawn;
 const is = require('is_js');
 
-const processes = {}
+const procs = {}
 const db = require('./state');
 
 
@@ -9,9 +9,9 @@ function createInputHandler(socket){
   let state = db.retrieveState();
   socket.on('disconnect', () => {
     console.log('Client disconnected.');
-    if(is.existy(processes[socket])){
+    if(is.existy(procs[socket])){
       console.log('Killing child process.');
-      child.kill();
+      procs[socket].kill();
     }
   });
 
@@ -20,13 +20,13 @@ function createInputHandler(socket){
     for(upload of state.uploads)
       if(upload.id.toString() === input) break;
 
-    if(!is.existy(processes[socket])){
+    if(!is.existy(procs[socket])){
 			console.log('running => ', upload.bin); 
       //run spawn new process
-      processes[socket] = spawnProcess(socket, upload.bin);
+      procs[socket] = spawnProcess(socket, upload.bin);
     }else{
       //add a new line so program receives text
-      processes[socket].stdin.write(input);
+      procs[socket].stdin.write(input);
     }
   };
 }
@@ -51,8 +51,8 @@ function spawnProcess(socket, message){
 
   child.on('close', (code) => {
     console.log(`\nExited with code ${code}\n`);
-    socket.emit('message', `\nExited with code ${code}\n`);
-    processes[socket] = undefined;
+    socket.emit('message', `\nExited with code ${code}\nPress Enter to re-run the program.`);
+    procs[socket] = undefined;
   });
 
   return child;
