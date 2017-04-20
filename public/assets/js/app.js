@@ -47,15 +47,19 @@
     shellMode = b;
     if(shellMode) return renderShellMode();
     renderSearchMode();
+    $input.focus();
   }
 
   function renderSearchMode(){
     if(socket)
       socket.close();
+
+    $input.removeClass('shell-mode');
+    $main.removeClass('shell-mode');
     $main.children().remove();
     var columns = ['module', 'type', 'name', 'mark'];
 
-    var table = '<table class="content" id="table"><tr>';
+    var table = '<table class="content" id="table"><tr class="table-header">';
     columns.forEach(function(k){
       table += '<th>' + k +  '</th>';
     });
@@ -68,14 +72,16 @@
 
   function renderShellMode(){
     socket = io();
-
-
 		socket.on('message', function(msg){
 			var $txt = $('#textarea');
 			$txt.val($txt.val() + msg);
+      $txt.scrollTop($txt.prop('scrollHeight'));
 		});
+
+    $input.addClass('shell-mode');
+    $main.addClass('shell-mode');
     $main.children().remove();
-    $main.append('<textarea id="textarea"></textarea>');
+    $main.append('<textarea id="textarea" readonly></textarea>');
   }
 
   function renderSearchResults(results){
@@ -94,6 +100,7 @@
       let id = event.target.parentElement.dataset.id;
       renderMain(true); 
       sendInputToShell(id);
+      $input.focus();
     });
   }
 
@@ -108,5 +115,9 @@
   var submitTimer = null;
 
   $('#input').on('keyup', onInputSubmit);
+  $(document).on('keyup', function(event){
+    if(event.keyCode !== 27) return;
+    if(shellMode) renderMain(false);
+  });
   renderMain(false);
 })(jQuery);
