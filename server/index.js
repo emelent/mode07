@@ -32,14 +32,14 @@ app.post('/upload', (req, res) => {
   if(!req.files)
     return res.status(400).end('No files were uploaded.');
 
-  let {level, module, type, content, name} = req.body;
+  let {level, number, module, type, content, name} = req.body;
   module = module.toLowerCase();
   type = type.toLowerCase();
   name = name.toLowerCase();
   level = parseInt(level) % prices.length;
   content = content.toLowerCase();
 
-  let uploadPath = path.join(__dirname, `uploads/${module}/${type}`);
+  let uploadPath = path.join(__dirname, `uploads/${module}/${type}${number}`);
   let binPath = `${uploadPath}/${name}`;
   let tarPath = `${uploadPath}/${name}.tar.gz`;
   exec(`mkdir -p ${uploadPath}`);
@@ -64,6 +64,7 @@ app.post('/upload', (req, res) => {
         type,
         name,
         content,
+        number,
         price: prices[level],
         uploadedAt: new Date().toString(),
         bin: binPath,
@@ -98,7 +99,6 @@ app.get('/uploads', (req, res) => {
 /*SOCKET IO*/
 io.on('connection', (socket) => {
   console.log('Client connected.');
-  socket.emit('message', 'SHELL\n');
   socket.on('message', runner(socket));
 });
 

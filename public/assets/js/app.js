@@ -57,7 +57,6 @@
     $input.removeClass('shell-mode');
     $main.removeClass('shell-mode');
     $main.children().remove();
-    var columns = ['module', 'type', 'name', 'mark'];
 
     var table = '<table class="content" id="table"><tr class="table-header">';
     columns.forEach(function(k){
@@ -107,7 +106,7 @@
   var shellMode;
   var socket;
   var binary;
-  var columns = ['module', 'type', 'name', 'price'];
+  var columns = ['module', 'type', 'number', 'content', 'name', 'price'];
   var $input = $('#input');
   var $main = $('#main');
   var uploads = $main.data('uploads');
@@ -118,6 +117,9 @@
   $(document).on('keyup', function(event){
     if(event.keyCode !== 27) return;
     if(shellMode) renderMain(false);
+  });
+  $(document).on('click', function(){
+    $input.focus();
   });
   renderMain(false);
 })(jQuery);

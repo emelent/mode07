@@ -51,7 +51,7 @@ function spawnProcess(socket, message){
 
   child.on('close', (code) => {
     console.log(`\nExited with code ${code}\n`);
-    socket.emit('message', `\nExited with code ${code}\nPress Enter to re-run the program.`);
+    socket.emit('message', `\nExited with code ${code}\nPress 'ENTER' to re-run the program.\n`);
     procs[socket] = undefined;
   });
 
