@@ -18,6 +18,7 @@ const app = express();
 const server = http.Server(app);
 const io = socketIo(server);
 const pubDir = path.join(__dirname, '../public');
+const prices = [50, 80, 100, 125, 150, 200, 300];
 
 /*MIDDLEWARE*/
 app.use('/assets', express.static(path.join(pubDir, 'assets')));
@@ -31,23 +32,19 @@ app.post('/upload', (req, res) => {
   if(!req.files)
     return res.status(400).end('No files were uploaded.');
 
-  let {module, type, name} = req.body;
+  let {level, module, type, name} = req.body;
   module = module.toLowerCase();
   type = type.toLowerCase();
   name = name.toLowerCase();
+  level = parseInt(level) % prices.length;
+
+  let uploadPath = path.join(__dirname, `uploads/${module}/${type}`);
+  let binPath = `${uploadPath}/${name}`;
+  let tarName = `${Date.now()}.tar.gz`;
+  let tarPath = `${uploadPath}/${tarName}`;
+  exec(`mkdir -p ${uploadPath}`);
 
   let binFile = req.files.binary;
-  let binDir = path.join(__dirname, `uploads/bin/${module}/${type}`);
-  let tarDir = path.join(__dirname, `uploads/src/${module}/${type}`);
-  let binPath = `${binDir}/${name}`;
-  let tarName = `${Date.now()}.tar.gz`;
-  let tarPath = `${tarDir}/${tarName}`;
-
-
-  console.log(binPath);
-  console.log(tarPath);
-  exec(`mkdir -p ${binDir}`);
-  exec(`mkdir -p ${tarDir}`);
   binFile.mv('bin', (error) => {
     if(error)
       return res.status(500).end(error.message);
@@ -56,30 +53,27 @@ app.post('/upload', (req, res) => {
       if(error)
         return res.status(500).end(error.message);
 
-      fs.rename('bin', binPath, (error) => {
-        if(error)
-          return res.status(500).end(error.message);
-      });
-      fs.rename('tar', tarPath, (error) => {
-        if(error)
-          return res.status(500).end(error.message);
-      });
-      fs.chmodSync(binPath, 777);
+      exec(`mv tar ${tarPath}`);
+      exec(`mv bin ${binPath}`);
+      exec(`chmod 777 ${binPath}`);
 
-      db.retrieveState((state) =>{
-        state.uploads.push({
-          module,
-          type,
-          name,
-          uploadedAt: new Date().toString(),
-          bin: binPath,
-          tar: `${module}/${type}/${tarName}`
-        });
-        db.storeState(state);
-        res.end('Uploaded successful.');
+      let state = db.retrieveState();
+      state.uploads.push({
+        id: Date.now(),
+        module,
+        type,
+        name,
+        price: prices[level],
+        uploadedAt: new Date().toString(),
+        bin: binPath,
+        tar: `${module}/${type}/${tarName}`
       });
+      db.storeState(state);
+      return res.end('Uploaded successful.');
     });
   });
+
+  return res.end('Something went wrong.');
 });
 
 app.get('/l99', (req, res) => {
@@ -87,18 +81,19 @@ app.get('/l99', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  db.retrieveState(state => res.render(
+  let state = db.retrieveState();
+  res.render(
     path.join(pubDir, 'index.pug'), 
     {uploads: state.uploads}
-  ));
+  );
 });
 app.get('/state', (req, res) => {
-  db.retrieveState(state => res.end(JSON.stringify(state)));
+  res.end(JSON.stringify(db.retrieveState()));
 });
 
 
 app.get('/uploads', (req, res) => {
-  db.retrieveState(state => res.end(JSON.stringify(state.uploads)));
+  res.end(JSON.stringify(db.retrieveState().uploads));
 });
 
 /*SOCKET IO*/
@@ -106,6 +101,9 @@ io.on('connection', (socket) => {
   console.log('Client connected.');
   socket.emit('message', 'SHELL\n');
   socket.on('message', runner(socket));
+  socket.on('disconnect', () => {
+    console.log('Client socket disconnected.');
+  });
 });
 
 
