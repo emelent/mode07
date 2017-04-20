@@ -25,6 +25,8 @@ app.use('/assets', express.static(path.join(pubDir, 'assets')));
 app.use(fileUpload());
 app.use(bodyParser.urlencoded({extended: false}));
 
+
+app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'pug');
 
 /*ROUTES*/
@@ -104,6 +106,6 @@ io.on('connection', (socket) => {
 
 
 /*START SERVER*/
-server.listen(3000, () => {
-  console.log('Listening on *:3000');
+server.listen(app.get('port'), () => {
+  console.log('Listening on port', app.get('port'));
 });
