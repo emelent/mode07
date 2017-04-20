@@ -6,21 +6,14 @@ html
            //integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
            //crossorigin="anonymous")
     script(src="/assets/js/jquery-3.2.1.min.js")
-    link(rel="stylesheet" href="assets/css/style.css")
+    script(src="/assets/js/socket.io.js")
+    link(rel="stylesheet" href="/assets/css/style.css")
   body  
     div.header 
       mode07
-    div#main
+    div#main(data-uploads=uploads)
     div.input
       span >
       input#input(type="text")
-    script
-     var d1 = #{uploads};
-     var d2 = !{uploads};
-     var d3 = !{JSON.stringify(uploads).replace(/<\//g, "<\\/")};
 
-     console.log("d1 =>", d1);
-     console.log("d2 =>", d2);
-     console.log("d3 =>", d3);
-
-    script(src="assets/js/app.js")
+    script(src="/assets/js/app.js")

@@ -62,14 +62,31 @@
     <input type="file" name="tar" /><br/><br/>
 
     <label for="module">Module:</label>
-    <input type="text" name="module"/>
+    <select name="module">
+      <option value="cos132">cos132</option>
+      <option value="cos110">cos110</option>
+      <option value="cos212">cos212</option>
+    </select>
 
     <label for="type">Type:</label>
-    <input type="text" name="type"/>
+    <select name="type">
+      <option value="assignment">assignment</option>
+      <option value="practical">practical</option>
+    </select>
+
+    <label for="level">Level:</label>
+    <select name="level">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+    </select>
 
     <label for="name">Name:</label>
     <input type="text" name="name"/>
-
     <button>Upload</button>
   </form>
 </body>

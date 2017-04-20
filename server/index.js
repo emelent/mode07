@@ -53,11 +53,11 @@ app.post('/upload', (req, res) => {
       if(error)
         return res.status(500).end(error.message);
 
-      exec(`mv tar ${tarPath}`);
-      exec(`mv bin ${binPath}`);
-      exec(`chmod 777 ${binPath}`);
+      fs.renameSync('bin', binPath);
+      fs.renameSync('tar', tarPath);
 
       let state = db.retrieveState();
+      exec(`chmod 777 ${binPath}`);
       state.uploads.push({
         id: Date.now(),
         module,
@@ -69,11 +69,9 @@ app.post('/upload', (req, res) => {
         tar: `${module}/${type}/${tarName}`
       });
       db.storeState(state);
-      return res.end('Uploaded successful.');
+      res.end('Uploaded successful.');
     });
   });
-
-  return res.end('Something went wrong.');
 });
 
 app.get('/l99', (req, res) => {

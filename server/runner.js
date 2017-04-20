@@ -1,16 +1,24 @@
 const spawn = require('child_process').spawn;
-const utils = require('./utils');
 const is = require('is_js');
 
 const processes = {}
+const db = require('./state');
+
 
 function createInputHandler(socket){
+  let state = db.retrieveState();
   return (input) => {
-    utils.log(`input: ${input}`);
+    let upload;
+    for(upload of state.uploads)
+      if(upload.id.toString() === input) break;
+
     if(!is.existy(processes[socket])){
-      processes[socket] = spawnProcess(socket, input);
+			console.log('running => ', upload.bin); 
+      //run spawn new process
+      processes[socket] = spawnProcess(socket, upload.bin);
     }else{
-      processes[socket].stdin.write(message);
+      //add a new line so program receives text
+      processes[socket].stdin.write(input + '\n');
     }
   };
 }
@@ -21,20 +29,20 @@ function spawnProcess(socket, message){
   cmd = cmd[0];
   
   const child = spawn(cmd, args);
-  utils.log(`Running ${cmd} ${args.join(' ')}`);
+  console.log(`Running ${cmd} ${args.join(' ')}`);
 
   child.stdout.on('data', (data) => {
-    utils.log(`\n${data}\n`);
+    console.log(`\n${data}\n`);
     socket.emit('message', data.toString());
   });
 
   child.stderr.on('data', (data) => {
-    utils.log(`\n${data}\n`);
+    console.log(`\n${data}\n`);
     socket.emit('message', data.toString());
   });
 
   child.on('close', (code) => {
-    utils.log(`\nExited with code ${code}\n`);
+    console.log(`\nExited with code ${code}\n`);
     socket.emit('message', `\nExited with code ${code}\n`);
     processes[socket] = undefined;
   });
@@ -43,3 +51,5 @@ function spawnProcess(socket, message){
 }
 
 module.exports = createInputHandler;
+
+
