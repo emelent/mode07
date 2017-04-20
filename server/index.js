@@ -32,16 +32,16 @@ app.post('/upload', (req, res) => {
   if(!req.files)
     return res.status(400).end('No files were uploaded.');
 
-  let {level, module, type, name} = req.body;
+  let {level, module, type, content, name} = req.body;
   module = module.toLowerCase();
   type = type.toLowerCase();
   name = name.toLowerCase();
   level = parseInt(level) % prices.length;
+  content = content.toLowerCase();
 
   let uploadPath = path.join(__dirname, `uploads/${module}/${type}`);
   let binPath = `${uploadPath}/${name}`;
-  let tarName = `${Date.now()}.tar.gz`;
-  let tarPath = `${uploadPath}/${tarName}`;
+  let tarPath = `${uploadPath}/${name}.tar.gz`;
   exec(`mkdir -p ${uploadPath}`);
 
   let binFile = req.files.binary;
@@ -63,10 +63,11 @@ app.post('/upload', (req, res) => {
         module,
         type,
         name,
+        content,
         price: prices[level],
         uploadedAt: new Date().toString(),
         bin: binPath,
-        tar: `${module}/${type}/${tarName}`
+        tar: tarPath
       });
       db.storeState(state);
       res.end('Uploaded successful.');
