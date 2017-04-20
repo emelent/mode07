@@ -18,7 +18,7 @@ function createInputHandler(socket){
       processes[socket] = spawnProcess(socket, upload.bin);
     }else{
       //add a new line so program receives text
-      processes[socket].stdin.write(input + '\n');
+      processes[socket].stdin.write(input);
     }
   };
 }
