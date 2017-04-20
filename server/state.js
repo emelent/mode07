@@ -2,6 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const dbFile = path.join(__dirname, 'db.json');
 
+if (!fs.existsSync(dbFile)){
+  let state = {uploads:[]};
+  fs.writeFileSync(dbFile, JSON.stringify(state));
+} 
+
 function retrieveStateAsync(cb){
   fs.readFile(dbFile, 'utf8', (error, data) => {
     if(error) throw error;
