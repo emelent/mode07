@@ -7,7 +7,7 @@
       var text = event.target.value;
       if(shellMode) return sendInputToShell(text);
       filterResults(text);
-    }else if(submitTimer === null){
+    }else if(!shellMode && submitTimer === null){
       submitTimer = setTimeout(function(){
         var text = event.target.value;
         if(shellMode) return sendInputToShell(text);
@@ -18,7 +18,7 @@
   }
 
   function sendInputToShell(text){
-    if(socket)  socket.emit('message', text);
+    if(socket)  socket.emit('message', text + '\n');
     $input.val('');
   }
 
