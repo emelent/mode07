@@ -100,9 +100,6 @@ io.on('connection', (socket) => {
   console.log('Client connected.');
   socket.emit('message', 'SHELL\n');
   socket.on('message', runner(socket));
-  socket.on('disconnect', () => {
-    console.log('Client socket disconnected.');
-  });
 });
 
 

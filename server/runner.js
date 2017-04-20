@@ -7,6 +7,14 @@ const db = require('./state');
 
 function createInputHandler(socket){
   let state = db.retrieveState();
+  socket.on('disconnect', () => {
+    console.log('Client disconnected.');
+    if(is.existy(processes[socket])){
+      console.log('Killing child process.');
+      child.kill();
+    }
+  });
+
   return (input) => {
     let upload;
     for(upload of state.uploads)
