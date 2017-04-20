@@ -1,3 +1,20 @@
 h1 {
   color: green;
 }
+
+@font-face{
+  font-family: pixel7;
+  src: url('./assets/fonts/pixel7.ttf');
+}
+@font-face{
+  font-family: zig;
+  src: url('./assets/fonts/zig.ttf');
+}
+@font-face{
+  font-family: vtr323;
+  src: url('./assets/fonts/vtr323.ttf');
+}
+@font-face{
+  font-family: whitrabt;
+  src: url('./assets/fonts/whitrabt.ttf');
+}
