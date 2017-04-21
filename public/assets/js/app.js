@@ -17,9 +17,10 @@
     }
   }
 
-  function sendInputToShell(text){
+  function sendInputToShell(text, init){
     text += '\n';
     if(socket)  socket.emit('message', text);
+    if(!init)   $('#textarea')[0].value += text;
     $input.val('');
   }
 
@@ -100,7 +101,7 @@
     $('.result').on('click', (event) =>{
       let id = event.target.parentElement.dataset.id;
       renderMain(true); 
-      sendInputToShell(id);
+      sendInputToShell(id, true);
       $input.focus();
     });
   }
