@@ -18,7 +18,8 @@
   }
 
   function sendInputToShell(text){
-    if(socket)  socket.emit('message', text + '\n');
+    text += '\n';
+    if(socket)  socket.emit('message', text);
     $input.val('');
   }
 
@@ -80,7 +81,8 @@
     $input.addClass('shell-mode');
     $main.addClass('shell-mode');
     $main.children().remove();
-    $main.append('<textarea id="textarea" readonly></textarea>');
+    var $txt = $('<textarea id="textarea" readonly></textarea>'); 
+    $main.append($txt);
   }
 
   function renderSearchResults(results){
