@@ -40,12 +40,12 @@ function spawnProcess(socket, message){
   console.log(`Running ${cmd} ${args.join(' ')}`);
 
   child.stdout.on('data', (data) => {
-    console.log(`\n${data}\n`);
+    //console.log(`\n${data}\n`);
     socket.emit('message', data.toString());
   });
 
   child.stderr.on('data', (data) => {
-    console.log(`\n${data}\n`);
+    //console.log(`\n${data}\n`);
     socket.emit('message', data.toString());
   });
 
