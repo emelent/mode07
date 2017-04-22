@@ -18,24 +18,28 @@ body{
   background: inherit;
 }
 
+/*unset del's default strike-trough style, plus ins' underlined*/
+del, ins{
+  text-decoration:none;
+} 
 .dialog{
-	position:absolute;
-	background: #000;
-	border: 1px dotted #5fae15; 
-	text-align: center;
-	padding: 20px;
-	animation: crt-on 0.4s;
-	margin: auto;
-	width: 400px;
-	height: 100px;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
+  position:absolute;
+  background: #000;
+  border: 1px dotted #5fae15; 
+  text-align: center;
+  padding: 20px;
+  animation: crt-on 0.4s;
+  margin: auto;
+  width: 400px;
+  height: 100px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .dialog button{
-	margin: 10px 5px;
+  margin: 10px 5px;
 }
 
 .header{
@@ -144,6 +148,24 @@ textarea{
   resize: none;
 }
 
+#announce{
+  position: absolute;
+  width: 50%;
+  height: 350px;
+  overflow: hidden;
+  text-align: center;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#enter{
+  display: block;
+  width: 100px;
+  margin: 50px auto;
+}
 .crt{
   /*color:green;*/
 }
@@ -157,7 +179,11 @@ textarea{
   height: 100%;
   width: 100%;
   background: transparent url(/assets/img/crt-screen.gif) top left repeat;
-/*   background: transparent; */
+  animation-delay: 5s;
+  animation-name: flicker;
+  animation-duration: 0.4s;
+  animation-iteration-count: 2;
+  /*   background: transparent; */
 }
 
 @font-face{
@@ -165,40 +191,47 @@ textarea{
   src: url('/assets/font/VT323-Regular.ttf');
 }
 
+@keyframes flicker{
+ 0%{
+  background: transparent;
+ }
+ 100%{  
+  background: transparent url(/assets/img/crt-screen.gif) top left repeat;
+ }
+}
 @keyframes crt-on {
-	0% {
-		opacity: 0.0;
-		transform: scale(0.5, 0.005);
-		box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
-	}
-	40% {
-		opacity: 1.0;
-	}
-	70% {
-		transform: scale(1.0, 0.005);
-		box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
-	}
-	100% {
-		transform: scale(1.0, 1.0);
-	}
+  0% {
+    opacity: 0.0;
+    transform: scale(0.5, 0.005);
+    box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
+  }
+  40% {
+    opacity: 1.0;
+  }
+  70% {
+    transform: scale(1.0, 0.005);
+    box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
+  }
+  100% {
+    transform: scale(1.0, 1.0);
+  }
 }
  
 @keyframes crt-off {
-	0% {
-		transform: scale(1.0, 1.0);
-		opacity: 1.0;
-	}
-	40% {
-		transform: scale(1.0, 0.005);
-		box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
-	}
-	70% {
-		opacity: 1.0;
-	}
-	100% {
-		opacity: 0.0;
-		transform: scale(0.5, 0.005);
-		box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
-	}
+  0% {
+    transform: scale(1.0, 1.0);
+    opacity: 1.0;
+  }
+  40% {
+    transform: scale(1.0, 0.005);
+    box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
+  }
+  70% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: 0.0;
+    transform: scale(0.5, 0.005);
+    box-shadow: inset 0 9999px 0 rgba(255,255,255,1.0);
+  }
 }
-

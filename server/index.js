@@ -83,6 +83,10 @@ app.get('/l99', (req, res) => {
 });
 
 app.get('/', (req, res) => {
+  res.render(path.join(pubDir, 'enter.pug'));
+});
+
+app.get('/explore', (req, res) => {
   let state = db.retrieveState();
   res.render(
     path.join(pubDir, 'index.pug'), 
